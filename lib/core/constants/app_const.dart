@@ -7,9 +7,6 @@ class AppConst {
   /// Name of the app.
   static const String appName = 'Github Search';
 
-  /// Current app version.
-  static const String version = '0.9.8';
-
   /// Used version of FlexColorScheme package.
   static const String packageVersion = '7.1.2';
 
@@ -19,11 +16,13 @@ class AppConst {
   /// Copyright years notice.
   static const String copyright = '© 2021-2023';
 
-  /// Author info.
-  static const String author = 'Mike Rydstrom';
-
-  /// License info.
-  static const String license = 'BSD 3-Clause License';
-
-
+  static const String appKey = 'secret';
+  static const String apiRestUrl = 'https://api.github.com';
+  static const String apiSocketUrl = '';
+  static const String apiAccessToken = '';
+  static const int receiveTimeout = 15000;
+  static const int connectTimeout = 5000;
+  static const int sendTimeout = 15000;
+  static const String version = '0.0.01';
+  static const Map<String, String> defaultHeaders = {};
 }

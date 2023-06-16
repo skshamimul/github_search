@@ -3,11 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/constants/app_const.dart';
 import '../../core/utils/app_scroll_behavior.dart';
-
-import '../../home/views/pages/home_page.dart';
-import '../../settings/controllers/settings.dart';
-
 import '../../theme/controllers/theme_providers.dart';
+import '../../ui/screen/home/views/pages/home_page.dart';
+import '../../ui/screen/settings/controllers/settings.dart';
 
 // ignore_for_file: prefer_mixin
 

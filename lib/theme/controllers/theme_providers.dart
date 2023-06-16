@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 
-import '../../home/controllers/platform_provider.dart';
-import '../../settings/controllers/settings.dart';
+import '../../ui/screen/settings/controllers/platform_provider.dart';
+import '../../ui/screen/settings/controllers/settings.dart';
 import '../models/app_theme.dart';
 import '../models/flex_tone.dart';
 

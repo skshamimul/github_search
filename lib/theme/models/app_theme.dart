@@ -185,7 +185,7 @@ class AppTheme {
   // works the same. In this demo we specify all required colors and do not
   // use the convenience features offered by the FlexSchemeColor.from() factory.
   // Well yes I did at first, but then I copy-pasted the values it computed for
-  // the values I did not want to specify. Copied from the theme_demo app UI,
+  // the values I did not want to specify. Copied from the github_search app UI,
   // by just clicking on each color box in the UI to get the Flutter color code
   // for it and then added the colors as const values below instead :)
 
