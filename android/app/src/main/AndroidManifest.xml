@@ -1,6 +1,7 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <application
-        android:label="github_search"
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.theme_demo">
+   <application
+        android:label="theme_demo"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

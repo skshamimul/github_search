@@ -1,11 +1,11 @@
 {
-    "name": "github_search",
-    "short_name": "github_search",
+    "name": "ThemeDemo",
+    "short_name": "ThemeDemo",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
     "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "description": "FlexColorScheme and Riverpod theme demo.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
     "icons": [
