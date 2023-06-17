@@ -1,10 +1,13 @@
+import 'package:auto_route/auto_route.dart';
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:github_search/app/extensions.dart';
 
 import '../../../../../model/repository.dart';
 import '../../../../widget/pagination/widget/pagination_widget.dart';
+import '../../../settings/controllers/settings.dart';
 import '../../../settings/views/bottom_sheet_settings.dart';
 import '../../../../../core/constants/app_const.dart';
 import '../../../../../core/constants/app_icons.dart';
@@ -14,37 +17,38 @@ import '../../controllers/home_page_controller.dart';
 /// Home page showing with a simple Riverpod count and theme controls.
 ///
 /// Also displays the active
-class HomePage extends ConsumerStatefulWidget {
-  const HomePage({super.key});
-
-  static const String route = '/home';
+@RoutePage<String>()
+class HomeScreen extends ConsumerStatefulWidget {
+  const HomeScreen({super.key});
 
   @override
-  ConsumerState<HomePage> createState() => _MyHomePageState();
+  ConsumerState<HomeScreen> createState() => _MyHomePageState();
 }
 
-class _MyHomePageState extends ConsumerState<HomePage> {
-  late final TrackingScrollController _scrollController;
+class _MyHomePageState extends ConsumerState<HomeScreen> {
+  late final ScrollController _scrollController;
+  late final ScrollController _scrollController2;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   bool _isOpen = false;
   @override
   void initState() {
     super.initState();
-    _scrollController = TrackingScrollController(
-      keepScrollOffset: true,
-      debugLabel: 'pageBodyScroll',
-    );
+    _scrollController = ScrollController();
+    _scrollController2 = ScrollController();
   }
 
   @override
   void dispose() {
     _scrollController.dispose();
+    _scrollController2.dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+     final ThemeData theme = Theme.of(context);
+    final TextTheme textTheme = theme.textTheme;
     // final TextStyle medium = textTheme.headlineMedium!;
 
     // final MediaQueryData media = MediaQuery.of(context);
@@ -65,6 +69,10 @@ class _MyHomePageState extends ConsumerState<HomePage> {
         model.fetchNextBatch();
       }
     });
+
+    final String _sort = ref.watch(Settings.appRepositrySortProvider);
+   
+
     return Scaffold(
       key: _scaffoldKey,
       extendBodyBehindAppBar: true,
@@ -72,6 +80,7 @@ class _MyHomePageState extends ConsumerState<HomePage> {
       body: AnnotatedRegion<SystemUiOverlayStyle>(
         value: FlexColorScheme.themedSystemNavigationBar(context),
         child: PageBody(
+          controller: _scrollController2,
           child:
               CustomScrollView(controller: _scrollController, slivers: <Widget>[
             SliverAppBar(
@@ -82,7 +91,32 @@ class _MyHomePageState extends ConsumerState<HomePage> {
                 automaticallyImplyLeading: false,
                 title: const Text(AppConst.appName),
                 actions: <Widget>[
-                  IconButton(onPressed: () {}, icon: const Icon(AppIcons.sort))
+                  IconButton(
+                      onPressed: () {},
+                      icon: RepaintBoundary(
+                        child: PopupMenuButton<String>(
+                          onSelected: (value) {
+                            ref
+                                .read(
+                                    Settings.appRepositrySortProvider.notifier)
+                                .set(value);
+                          },
+                          position: PopupMenuPosition.under,
+                          itemBuilder: (BuildContext context) {
+                            Color selected = theme.colorScheme.secondary; 
+                            return <PopupMenuItem<String>>[
+                            PopupMenuItem<String>(
+                                value: "best", child:  Text('Best Match', style: textTheme.labelMedium!.copyWith(color: _sort =='best'?selected:null ),)),
+                            PopupMenuItem<String>(
+                                value: 'updated', child: Text('Updated Date',style: textTheme.labelMedium!.copyWith(color: _sort =='updated'?selected:null ),)),
+                            PopupMenuItem<String>(
+                                value: 'stars', child: Text('Stars',style: textTheme.labelMedium!.copyWith(color: _sort =='stars'?selected:null ),)),
+                          ];
+                          }
+                               ,
+                          icon: const Icon(AppIcons.sort),
+                        ),
+                      ))
                 ],
               ),
               expandedHeight: 50,
@@ -153,6 +187,12 @@ class PostItemsListBuilder extends StatelessWidget {
                         const EdgeInsetsDirectional.symmetric(horizontal: 8),
                     child: Card(
                       child: ListTile(
+                        onTap: () async {
+                          '______________Start Data_____'.log;
+                          '${data.id} ${data.isarId}'.log;
+                          '______________End_____'.log;
+                          await model.navToDetailsScreen(data.id);
+                        },
                         title: Text(
                           title.length > 35
                               ? title.substring(0, 35) + '...'
@@ -177,7 +217,4 @@ class PostItemsListBuilder extends StatelessWidget {
           }
         });
   }
-  
 }
-
-

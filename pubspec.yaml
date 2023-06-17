@@ -54,17 +54,23 @@ dependencies:
   isar_flutter_libs: ^3.0.2
   json_annotation: ^4.6.0
   connectivity_plus: ^4.0.1
+  auto_route: ^6.2.0
+  get_it: ^7.6.0
+  cached_network_image: ^3.2.3
+  intl: ^0.18.1
 
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   
+  auto_route_generator: ^6.2.0
   build_runner: ^2.0.0
   isar_generator: ^3.0.2
   json_serializable: ^6.3.0
   flutter_lints: ^2.0.1
   freezed:
+  
 
 # The following section is specific to Flutter.
 flutter:

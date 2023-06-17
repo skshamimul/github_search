@@ -3,9 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/constants/app_const.dart';
 import '../../core/utils/app_scroll_behavior.dart';
+import '../../service/service_locator.dart';
 import '../../theme/controllers/theme_providers.dart';
-import '../../ui/screen/home/views/pages/home_page.dart';
+
 import '../../ui/screen/settings/controllers/settings.dart';
+import '../router/app_router.dart';
 
 // ignore_for_file: prefer_mixin
 
@@ -48,17 +50,14 @@ class _GithubSearchAppState extends ConsumerState<GithubSearchApp>
   Widget build(BuildContext context) {
     debugPrint('Rebuild MaterialApp');
 
-    return MaterialApp(
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       scrollBehavior: const AppScrollBehavior(),
       title: AppConst.appName,
       theme: ref.watch(lightThemeProvider),
       darkTheme: ref.watch(darkThemeProvider),
       themeMode: ref.watch(Settings.themeModeProvider),
-      initialRoute: HomePage.route,
-      routes: <String, WidgetBuilder>{
-        HomePage.route: (BuildContext context) => const HomePage(),
-      },
+      routerConfig: getIt<AppRouter>().config(),
     );
   }
 }

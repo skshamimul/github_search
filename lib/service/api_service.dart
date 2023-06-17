@@ -32,8 +32,8 @@ class ApiService {
   }
 
   Stream<List<Repositoriey>> watchRepositoriey(
-      {required Map<String, dynamic> condition}) {
-    final _watchRepositoriey = _api.watchRepositoriey();
+      {required String sort}) {
+    final _watchRepositoriey = _api.watchRepositoriey(sort: sort);
 
     return _watchRepositoriey;
   }
@@ -42,5 +42,10 @@ class ApiService {
     final int result = await _api.repoItemCount();
 
     return result;
+  }
+
+  Future<Repositoriey?> fatchReposirtyFromId(int isarId) async {
+    final Repositoriey? record = await _api.fatchReposirtyFromId(isarId);
+    return record;
   }
 }

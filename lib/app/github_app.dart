@@ -121,14 +121,21 @@ class GithubApp {
     return listRepositoriey;
   }
 
-  Future<int> repoItemCount()async{
- final int result = await _instance._isar.repositorieys.count();
-  return result;
+  Future<int> repoItemCount() async {
+    final int result = await _instance._isar.repositorieys.count();
+    return result;
   }
 
-  Stream<List<Repositoriey>> watchRepositoriey() {
-   final Query<Repositoriey> repositoriey =
-        _instance._isar.repositorieys.buildQuery();
+  Stream<List<Repositoriey>> watchRepositoriey({required String sort}) {
+    List<SortProperty> _sortBy = sort == 'best'
+        ? const []
+        : [
+            SortProperty(
+                property: sort == 'updated' ? 'updatedAt' : 'watchersCount',
+                sort: Sort.desc)
+          ];
+    final Query<Repositoriey> repositoriey =
+        _instance._isar.repositorieys.buildQuery(sortBy: _sortBy);
 
     return repositoriey.watch(fireImmediately: true);
   }
@@ -140,5 +147,14 @@ class GithubApp {
       return record.isarId;
     }
     return null;
+  }
+
+  Future<Repositoriey?> fatchReposirtyFromId(int isarId) async {
+    final record = await _instance._isar.repositorieys
+        .filter()
+        .idEqualTo(isarId)
+        .findFirst();
+
+    return record;
   }
 }

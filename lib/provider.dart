@@ -13,3 +13,7 @@ final itemCountProvider = FutureProvider<int>((ref) async {
 
   return isar;
 });
+
+final isarIdProvider = StateProvider<int>((ref) {
+  return 0;
+});

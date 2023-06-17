@@ -40,67 +40,71 @@ class BottomSheetSettings extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final bool isLight = Theme.of(context).brightness == Brightness.light;
-    return SizedBox(
-      height: 400,
-      child: Column(
-        children: <Widget>[
-          const _CloseBottomSheetHandle(),
-          Expanded(
-            child: ListView(
-              controller: ScrollController(),
-              primary: false,
-              children: <Widget>[
-                const ListTile(title: Text('Settings')),
-                const Divider(),
-                const ThemePopupMenu(),
-                const UseMaterial3Switch(),
-                const UseSubThemesListTile(
-                  title: Text('Use component themes'),
-                  subtitle:
-                      Text('Enable FlexColorScheme opinionated sub themes'),
-                ),
-                const ThemeModeListTile(title: Text('Theme mode')),
-                if (isLight)
-                  const LightColorsSwapSwitch()
-                else
-                  const DarkColorsSwapSwitch(),
-                // Hide the extra dark mode controls in light theme mode.
-                AnimatedHide(
-                  hide: isLight,
-                  child: const Column(
-                    children: <Widget>[
-                      DarkIsTrueBlackSwitch(),
-                      DarkComputeThemeSwitch(),
-                      DarkLevelSlider(),
-                    ],
+    return DecoratedBox(
+      decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.secondaryContainer),
+      child: SizedBox(
+        height: 400,
+        child: Column(
+          children: <Widget>[
+            const _CloseBottomSheetHandle(),
+            Expanded(
+              child: ListView(
+                controller: ScrollController(),
+                primary: false,
+                children: <Widget>[
+                  const ListTile(title: Text('Settings')),
+                  const Divider(),
+                  const ThemePopupMenu(),
+                  const UseMaterial3Switch(),
+                  const UseSubThemesListTile(
+                    title: Text('Use component themes'),
+                    subtitle:
+                        Text('Enable FlexColorScheme opinionated sub themes'),
                   ),
-                ),
-                const Divider(),
-                const ListTile(title: Text('AppBar style')),
-                const Divider(),
-                const AppBarElevationSlider(),
-                if (isLight) ...<Widget>[
-                  const LightAppBarStylePopupMenu(),
-                  const LightAppBarOpacitySlider(),
-                ] else ...<Widget>[
-                  const DarkAppBarStylePopupMenu(),
-                  const DarkAppBarOpacitySlider(),
-                ],
-                const Divider(),
-                const TransparentStatusBarSwitch(),
+                  const ThemeModeListTile(title: Text('Theme mode')),
+                  if (isLight)
+                    const LightColorsSwapSwitch()
+                  else
+                    const DarkColorsSwapSwitch(),
+                  // Hide the extra dark mode controls in light theme mode.
+                  AnimatedHide(
+                    hide: isLight,
+                    child: const Column(
+                      children: <Widget>[
+                        DarkIsTrueBlackSwitch(),
+                        DarkComputeThemeSwitch(),
+                        DarkLevelSlider(),
+                      ],
+                    ),
+                  ),
+                  const Divider(),
+                  const ListTile(title: Text('AppBar style')),
+                  const Divider(),
+                  const AppBarElevationSlider(),
+                  if (isLight) ...<Widget>[
+                    const LightAppBarStylePopupMenu(),
+                    const LightAppBarOpacitySlider(),
+                  ] else ...<Widget>[
+                    const DarkAppBarStylePopupMenu(),
+                    const DarkAppBarOpacitySlider(),
+                  ],
+                  const Divider(),
+                  const TransparentStatusBarSwitch(),
 
-                const Divider(),
-                PlatformPopupMenu(
-                  platform: ref.watch(platformProvider),
-                  onChanged: (TargetPlatform newPlatform) {
-                    ref.read(platformProvider.notifier).state = newPlatform;
-                  },
-                ),
-                const Divider(),
-              ],
+                  const Divider(),
+                  PlatformPopupMenu(
+                    platform: ref.watch(platformProvider),
+                    onChanged: (TargetPlatform newPlatform) {
+                      ref.read(platformProvider.notifier).state = newPlatform;
+                    },
+                  ),
+                  const Divider(),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

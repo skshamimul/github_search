@@ -37,6 +37,7 @@ class Settings {
   static const bool _lightSwapColors = false;
   static const bool _darkSwapColors = false;
   // AppBar elevation and color defaults.
+    static const String _appRepoSOrt = 'best';
   static const double _appBarElevation = 0.0;
   static const FlexAppBarStyle _lightAppBarStyle = FlexAppBarStyle.background;
   static const FlexAppBarStyle _darkAppBarStyle = FlexAppBarStyle.background;
@@ -66,6 +67,8 @@ class Settings {
   /// values to their app default values.
   static void reset(WidgetRef ref) {
     if (_debug) debugPrint('Settings: reset all DB values');
+    // Custom Setting
+    ref.read(appRepositrySortProvider.notifier).reset();
     // Use material 3, theme mode and active color scheme.
     ref.read(useMaterial3Provider.notifier).reset();
     ref.read(themeModeProvider.notifier).reset();
@@ -108,6 +111,10 @@ class Settings {
   /// This is typically only used after switching DB implementation dynamically.
   static void init(Ref ref) {
     if (_debug) debugPrint('Settings: init DB values');
+
+    // Custom Property
+    ref.read(appRepositrySortProvider.notifier).init();
+
     // Use material 3, theme mode and active color scheme.
     ref.read(useMaterial3Provider.notifier).init();
     ref.read(themeModeProvider.notifier).init();
@@ -143,6 +150,26 @@ class Settings {
     // Component theme global border radius.
     ref.read(defaultRadiusProvider.notifier).init();
   }
+
+  /// Custom Sort Reposotry
+  ///
+  /// The associated provider uses same name with "Provider" added to it.
+  static const String _keyRepoSort = 'repositrySort';
+
+  /// Provider for the elevation level used on the AppBar theme.
+  ///
+
+  static final NotifierProvider<SettingsEntry<String>, String>
+      appRepositrySortProvider = NotifierProvider<SettingsEntry<String>, String>(
+    () {
+      return SettingsEntry<String>(
+        defaultValue: _appRepoSOrt,
+        key: _keyRepoSort,
+      );
+    },
+    // Use the unique key-value DB key as provider name, useful for debugging.
+    name: '${_keyRepoSort}Provider',
+  );
 
   /// String key used for defining if we use Material 3 or Material 2.
   ///
