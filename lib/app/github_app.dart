@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:isar/isar.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -11,6 +12,7 @@ class GithubApp {
   late GithubAppRest _rest;
   late Map<String, String>? headers = {};
   bool _initialized = false;
+  late final Isar _isar;
 
   static GithubApp get instance {
     assert(
@@ -50,7 +52,7 @@ class GithubApp {
     await BuildInfo.init();
 
     final dir = await getApplicationDocumentsDirectory();
-    final isar = await Isar.open(
+    _instance._isar = await Isar.open(
       [RepositorieySchema, OwnerSchema],
       directory: dir.path,
     );
@@ -90,5 +92,53 @@ class GithubApp {
     headers['userAgent'] =
         'githubapp/${BuildInfo.version} ${BuildInfo.platform}/${BuildInfo.platformVersion} (${BuildInfo.deviceModel})';
     return headers;
+  }
+
+  Future<List<Repositoriey>> getGithubRepo(
+      {required Map<String, dynamic> queryParameters}) async {
+    final Response response = await _instance._rest.get(
+      '/search/repositories',
+      queryParameters: queryParameters,
+    );
+    final Map<String, dynamic> mapdata = response.data as Map<String, dynamic>;
+    final List<dynamic> listItem = mapdata['items'] as List<dynamic>;
+    final List<Repositoriey> listRepositoriey = [];
+    final List<Owner> listOwner = [];
+    for (var element in listItem) {
+      final Repositoriey repo =
+          Repositoriey.fromJson(element as Map<String, dynamic>);
+      listRepositoriey.add(repo);
+      listOwner.add(repo.ownerModel!);
+      final int? isarId = await getIsarId(repo.id);
+      if (isarId == null) {
+        final Repositoriey newRepo = repo..owner.value = repo.ownerModel;
+        _instance._isar.writeTxnSync(() {
+          _instance._isar.repositorieys.putSync(newRepo);
+        });
+      }
+    }
+
+    return listRepositoriey;
+  }
+
+  Future<int> repoItemCount()async{
+ final int result = await _instance._isar.repositorieys.count();
+  return result;
+  }
+
+  Stream<List<Repositoriey>> watchRepositoriey() {
+   final Query<Repositoriey> repositoriey =
+        _instance._isar.repositorieys.buildQuery();
+
+    return repositoriey.watch(fireImmediately: true);
+  }
+
+  Future<int?> getIsarId(int id) async {
+    final record =
+        await _instance._isar.repositorieys.filter().idEqualTo(id).findFirst();
+    if (record != null) {
+      return record.isarId;
+    }
+    return null;
   }
 }

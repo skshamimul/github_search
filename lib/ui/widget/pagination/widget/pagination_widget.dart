@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -7,7 +6,7 @@ import '../pagination_state/pagination_state.dart';
 class PaginationItemsList extends StatelessWidget {
   final PaginationState state;
   final dynamic model;
-  final Widget Function(dynamic value, bool isSearsing) child;
+  final Widget Function() child;
   const PaginationItemsList(
       {Key? key, required this.state, required this.model, required this.child})
       : super(key: key);
@@ -32,36 +31,19 @@ class PaginationItemsList extends StatelessWidget {
                     ],
                   ),
                 )
-              : child(items, false);
+              : child();
         },
         loading: () => const SliverToBoxAdapter(
             child: Center(child: CircularProgressIndicator())),
-        error: (e, stk) => SliverToBoxAdapter(
-              child: Center(
-                child: Column(
-                  children: const [
-                    Icon(Icons.info),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    Text(
-                      "Something Went Wrong!",
-                      style: TextStyle(
-                        color: Colors.black,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+        error: (e, stk) => child(),
         onGoingLoading: (items) {
-          return child(items, false);
+          return child();
         },
         onGoingError: (items, e, stk) {
-          return child(items, false);
+          return child();
         },
         searchResult: (items) {
-          return child(items, true);
+          return child();
         });
   }
 }
@@ -107,15 +89,15 @@ class OnGoingBottomWidget extends StatelessWidget {
             orElse: () => const SizedBox.shrink(),
             onGoingLoading: (items) =>
                 const Center(child: CircularProgressIndicator()),
-            onGoingError: (items, e, stk) => Center(
-              child: Column(
-                children: const [
+            onGoingError: (items, e, stk) => const Center(
+              child:  Column(
+                children:  [
                   Icon(Icons.info),
                   SizedBox(
                     height: 20,
                   ),
                   Text(
-                    "Something Went Wrong!",
+                    'Something Went Wrong!',
                     style: TextStyle(
                       color: Colors.black,
                     ),

@@ -1,4 +1,3 @@
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../../model/repository.dart';
@@ -10,11 +9,13 @@ import '../../../widget/pagination/pagination_state/pagination_state.dart';
 final homeScreenProvider = StateNotifierProvider<
     HomeScreenController<Repositoriey>, PaginationState<Repositoriey>>((ref) {
   final apiService = ref.watch(apiServiceProvider);
+
   return HomeScreenController(
       itemsPerBatch: 10,
       apiService: apiService,
       fetchNextItems: (mapData) async {
-      final  List<Repositoriey> dataList =
+        
+        final List<Repositoriey> dataList =
             await apiService.fatchAlldata(page: mapData['page'] as int);
         return dataList;
       })
@@ -29,28 +30,34 @@ class HomeScreenController<T> extends PaginationNotifier<T> {
       required int itemsPerBatch,
       required Future<List<T>> Function(Map<String, dynamic> p1)
           fetchNextItems})
-      : super(itemsPerBatch: itemsPerBatch, fetchNextItems: fetchNextItems);
+      : super(
+          itemsPerBatch: itemsPerBatch,
+          fetchNextItems: fetchNextItems,
+        );
 
   Map<String, dynamic> _getParameterData() => {
         // 'title': {'value': _title, 'condition': QueryType.contains},
       };
 
-  void init() async {
+  Future<void> init() async {
     setQuery(_getParameterData());
-    setSkip(1);
+    final int itemCount = await apiService.repositoryItemCount();
+    int page = (itemCount / 10).round();
+    setSkip(page);
     clearData();
+
     await fetchFirstBatch();
   }
 
-  // Stream<List<dynamic>> loadSteam() {
+  Stream<List<dynamic>> loadSteam() {
+    return apiService.watchRepositoriey(condition: {});
+  }
 
-  //   return apiService.fetchStream(model: _model, condition: _data);
-  // }
-
-  void setReset() async {
+  Future<void> setReset() async {
     setSearching(false);
     setSkip(1);
     clearData();
+  
 
     await fetchFirstBatch();
   }

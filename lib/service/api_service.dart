@@ -1,3 +1,4 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
 
 import '../app/extensions.dart';
@@ -17,23 +18,29 @@ class ApiService {
       int perPage = 10,
       int page = 1}) async {
     final Map<String, dynamic> _sort = sort != null ? {'sort': sort} : {};
-    final Response response = await _api.rest.get(
-      '/search/repositories',
-      queryParameters: {
-        'q': query,
-        'order': order,
-        'per_page': perPage,
-        'page': page,
-        ..._sort
-      },
-    );
-    final Map<String, dynamic> mapdata = response.data as Map<String, dynamic>;
-    final List<Repositoriey> listRepositoriey = (mapdata['items'] as List<dynamic>)
-        .map((e) => Repositoriey.fromJson(e as Map<String, dynamic>))
-        .toList();
-    final List<Owner> listOwner =   listRepositoriey.map((e) => e.ownerModel!).toList();  
 
+    final List<Repositoriey> response = await _api.getGithubRepo(
+        queryParameters: {
+          'q': query,
+          'order': order,
+          'per_page': perPage,
+          'page': page,
+          ..._sort
+        });
 
-    return listRepositoriey;
+    return response;
+  }
+
+  Stream<List<Repositoriey>> watchRepositoriey(
+      {required Map<String, dynamic> condition}) {
+    final _watchRepositoriey = _api.watchRepositoriey();
+
+    return _watchRepositoriey;
+  }
+
+  Future<int> repositoryItemCount() async {
+    final int result = await _api.repoItemCount();
+
+    return result;
   }
 }

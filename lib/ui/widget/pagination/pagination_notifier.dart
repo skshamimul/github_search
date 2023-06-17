@@ -1,12 +1,13 @@
+// ignore_for_file: always_specify_types
+
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:github_search/ui/widget/pagination/pagination_state/pagination_state.dart';
 
-
 class PaginationNotifier<T> extends StateNotifier<PaginationState<T>> {
   final int itemsPerBatch;
+
 
   int _skip = 1;
   PaginationNotifier(
@@ -25,8 +26,8 @@ class PaginationNotifier<T> extends StateNotifier<PaginationState<T>> {
   String sort = 'desc';
   Map<String, dynamic> _query = {};
 
-  Map<String, dynamic> getParameterData() => 
-        {"page": _skip, "take": itemsPerBatch, 'sort': sort};
+  Map<String, dynamic> getParameterData() =>
+      {"page": _skip, "take": itemsPerBatch, 'sort': sort};
 
   void updateData(List<T> result) {
     noMoreItems = result.length < itemsPerBatch;
@@ -48,7 +49,7 @@ class PaginationNotifier<T> extends StateNotifier<PaginationState<T>> {
       }
     }
 
-    _skip ++;
+    _skip++;
   }
 
   Future<void> fetchFirstBatch() async {
@@ -71,12 +72,11 @@ class PaginationNotifier<T> extends StateNotifier<PaginationState<T>> {
   }
 
   void setSkip(int skip) {
-    if (skip ==0) {
-       _skip = 1;
+    if (skip == 0) {
+      _skip = 1;
     } else {
-       _skip = skip;
+      _skip = skip;
     }
-   
   }
 
   void setSearching(bool isSearching) {
@@ -98,27 +98,27 @@ class PaginationNotifier<T> extends StateNotifier<PaginationState<T>> {
     }
 
     if (state == PaginationState<T>.onGoingLoading(_items)) {
-      log("Rejected");
+     
       return;
     }
 
-    log("Fetching next batch of items");
+   
     if (!mounted) return;
     state = PaginationState.onGoingLoading(_items);
 
     try {
+
+      // ignore: inference_failure_on_instance_creation
       await Future.delayed(const Duration(seconds: 1));
       //var parameter = getParameterData(_skip, itemsPerBatch);
 
       final result = await fetchNextItems(getParameterData());
-      log(result.length.toString());
+    
       updateData(result);
     } catch (e, stk) {
-      log("Error fetching next page", error: e, stackTrace: stk);
+    
       if (!mounted) return;
       state = PaginationState.onGoingError(_items, e, stk);
     }
   }
-
- 
 }
