@@ -3,7 +3,7 @@
 A new Flutter Offline First Flutter project for Github Reposotry Search.
 
 ## Youtube Video Url 
-[Demo Video Url](https://www.youtube.com/watch?v=AQN1HvxScq0&t=13s)
+[Demo Video Url](https://www.youtube.com/watch?v=AQN1HvxScq0)
 
 
 ## APK URL
