@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:github_search/app/extensions.dart';
+import 'package:intl/intl.dart';
 
 import '../../../../../model/repository.dart';
 import '../../../../widget/pagination/widget/pagination_widget.dart';
@@ -47,7 +48,7 @@ class _MyHomePageState extends ConsumerState<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-     final ThemeData theme = Theme.of(context);
+    final ThemeData theme = Theme.of(context);
     final TextTheme textTheme = theme.textTheme;
     // final TextStyle medium = textTheme.headlineMedium!;
 
@@ -71,7 +72,6 @@ class _MyHomePageState extends ConsumerState<HomeScreen> {
     });
 
     final String _sort = ref.watch(Settings.appRepositrySortProvider);
-   
 
     return Scaffold(
       key: _scaffoldKey,
@@ -103,17 +103,35 @@ class _MyHomePageState extends ConsumerState<HomeScreen> {
                           },
                           position: PopupMenuPosition.under,
                           itemBuilder: (BuildContext context) {
-                            Color selected = theme.colorScheme.secondary; 
+                            Color selected = theme.colorScheme.secondary;
                             return <PopupMenuItem<String>>[
-                            PopupMenuItem<String>(
-                                value: "best", child:  Text('Best Match', style: textTheme.labelMedium!.copyWith(color: _sort =='best'?selected:null ),)),
-                            PopupMenuItem<String>(
-                                value: 'updated', child: Text('Updated Date',style: textTheme.labelMedium!.copyWith(color: _sort =='updated'?selected:null ),)),
-                            PopupMenuItem<String>(
-                                value: 'stars', child: Text('Stars',style: textTheme.labelMedium!.copyWith(color: _sort =='stars'?selected:null ),)),
-                          ];
-                          }
-                               ,
+                              PopupMenuItem<String>(
+                                  value: "best",
+                                  child: Text(
+                                    'Best Match',
+                                    style: textTheme.labelMedium!.copyWith(
+                                        color:
+                                            _sort == 'best' ? selected : null),
+                                  )),
+                              PopupMenuItem<String>(
+                                  value: 'updated',
+                                  child: Text(
+                                    'Updated Date',
+                                    style: textTheme.labelMedium!.copyWith(
+                                        color: _sort == 'updated'
+                                            ? selected
+                                            : null),
+                                  )),
+                              PopupMenuItem<String>(
+                                  value: 'stars',
+                                  child: Text(
+                                    'Stars',
+                                    style: textTheme.labelMedium!.copyWith(
+                                        color:
+                                            _sort == 'stars' ? selected : null),
+                                  )),
+                            ];
+                          },
                           icon: const Icon(AppIcons.sort),
                         ),
                       ))
@@ -171,6 +189,7 @@ class PostItemsListBuilder extends StatelessWidget {
   Widget build(BuildContext context) {
     final ThemeData theme = Theme.of(context);
     final TextTheme textTheme = theme.textTheme;
+
     return StreamBuilder<List<dynamic>>(
         stream: model.loadSteam(),
         builder: (context, snapshot) {
@@ -182,6 +201,9 @@ class PostItemsListBuilder extends StatelessWidget {
                       snapshot.data![index] as Repositoriey;
                   String des = data.description ?? '';
                   String title = data.fullName;
+                  String updateDateAt =
+                      DateFormat('dd/MM/yy').format(data.updatedAt!);
+                  String updateTimeAt = DateFormat.jm().format(data.updatedAt!);
                   return Padding(
                     padding:
                         const EdgeInsetsDirectional.symmetric(horizontal: 8),
@@ -200,8 +222,42 @@ class PostItemsListBuilder extends StatelessWidget {
                           style: textTheme.titleMedium!
                               .copyWith(color: theme.colorScheme.primary),
                         ),
-                        subtitle: Text(
-                          des.length > 80 ? des.substring(0, 80) + '...' : des,
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              des.length > 80
+                                  ? des.substring(0, 80) + '...'
+                                  : des,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 0, vertical: 4),
+                                  child: Text.rich(TextSpan(
+                                      text: 'Updated At : ',
+                                      style: textTheme.bodySmall!,
+                                      children: [
+                                        TextSpan(
+                                            text:
+                                                '$updateDateAt - $updateTimeAt')
+                                      ])),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 0, vertical: 4),
+                                  child: Text.rich(TextSpan(
+                                      text: '** ',
+                                      style: textTheme.bodySmall!,
+                                      children: [
+                                        TextSpan(text: '${data.watchersCount}')
+                                      ])),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
                     ),
